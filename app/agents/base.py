@@ -8,11 +8,11 @@ from typing import Generic, TypeVar
 from langchain.agents import create_agent
 from langchain.agents.structured_output import ToolStrategy
 from langchain_core.runnables import Runnable
-from langchain_openai import ChatOpenAI
 from langgraph.store.memory import InMemoryStore
 from pydantic import BaseModel
 
 from app.config import Settings
+from app.llm_factory import build_chat_model
 
 
 ResponseT = TypeVar("ResponseT", bound=BaseModel)
@@ -30,18 +30,8 @@ class BaseManufacturingAgent(ABC, Generic[ContextT, ResponseT]):
         self.store = store
         self._agent: Runnable | None = None
 
-    def _build_model(self) -> ChatOpenAI:
-        model_kwargs: dict[str, object] = {
-            "model": self.settings.openai_model,
-            "temperature": self.model_temperature,
-            "timeout": self.settings.openai_timeout_seconds,
-            "max_retries": 2,
-        }
-        if self.settings.openai_api_key:
-            model_kwargs["api_key"] = self.settings.openai_api_key
-        if self.settings.openai_base_url:
-            model_kwargs["base_url"] = self.settings.openai_base_url
-        return ChatOpenAI(**model_kwargs)
+    def _build_model(self):
+        return build_chat_model(self.settings, temperature=self.model_temperature)
 
     @abstractmethod
     def _build_agent(self) -> Runnable:
@@ -78,4 +68,3 @@ class BaseManufacturingAgent(ABC, Generic[ContextT, ResponseT]):
             store=self.store,
             system_prompt=system_prompt,
         )
-

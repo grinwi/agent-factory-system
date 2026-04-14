@@ -2,6 +2,8 @@
 
 Production-style LangChain and LangGraph backend that analyzes manufacturing telemetry, explains issues, proposes actions, and returns strict JSON through a FastAPI API.
 
+The agent runtime can be configured to use OpenAI, Anthropic Claude, or Google Gemini through environment variables.
+
 ## Architecture
 
 The system is organized as a real multi-agent pipeline:
@@ -32,6 +34,35 @@ pip install -e ".[dev]"
 cp .env.example .env
 uvicorn app.main:app --reload
 ```
+
+## Model Providers
+
+Set `LLM_PROVIDER` to one of:
+
+- `openai`
+- `anthropic` or `claude`
+- `gemini` or `google`
+
+Examples:
+
+```bash
+# OpenAI
+export LLM_PROVIDER=openai
+export OPENAI_API_KEY=...
+export LLM_MODEL=gpt-4.1-mini
+
+# Claude
+export LLM_PROVIDER=anthropic
+export ANTHROPIC_API_KEY=...
+export LLM_MODEL=claude-haiku-4-5-20251001
+
+# Gemini
+export LLM_PROVIDER=gemini
+export GOOGLE_API_KEY=...
+export LLM_MODEL=gemini-2.5-flash
+```
+
+If you omit `LLM_MODEL`, the app falls back to a provider-specific default from `.env.example`.
 
 ## API
 
@@ -78,4 +109,3 @@ docker compose up --build
 ```
 
 More detail is in [`docs/architecture.md`](/Users/adam.grunwald/agent-factory-system/docs/architecture.md).
-

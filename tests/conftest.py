@@ -67,11 +67,14 @@ def assert_strict_output_shape(payload: dict[str, Any]) -> None:
 
 
 @pytest.fixture(autouse=True)
-def _disable_live_openai(monkeypatch: pytest.MonkeyPatch) -> None:
+def _disable_live_llm_calls(monkeypatch: pytest.MonkeyPatch) -> None:
     """
     Default test safety: avoid accidental live API usage in local/CI test runs.
     """
+    monkeypatch.setenv("LLM_PROVIDER", "openai")
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key")
+    monkeypatch.setenv("GOOGLE_API_KEY", "test-key")
     monkeypatch.setenv("LANGCHAIN_TRACING_V2", "false")
     monkeypatch.setenv("LANGSMITH_API_KEY", "test-key")
 
@@ -115,5 +118,6 @@ def pytest_report_header(config: Any) -> list[str]:
     return [
         "Manufacturing analytics tests enforce strict output keys: "
         "issues, analysis, solutions, confidence_score",
+        f"LLM_PROVIDER defaulted for tests: {os.getenv('LLM_PROVIDER')}",
         f"OPENAI_API_KEY set for test isolation: {bool(os.getenv('OPENAI_API_KEY'))}",
     ]

@@ -9,7 +9,9 @@ description = "Production-style LangChain and LangGraph manufacturing analytics 
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115,<1.0",
+    "langchain-anthropic>=0.3,<1.0",
     "langchain>=1.0,<2.0",
+    "langchain-google-genai>=2.0,<3.0",
     "langchain-openai>=0.3,<1.0",
     "langgraph>=0.2,<2.0",
     "pandas>=2.2,<3.0",
@@ -40,4 +42,3 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["B", "C4", "E", "F", "I", "N", "UP"]
-

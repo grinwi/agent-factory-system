@@ -4,6 +4,8 @@
 
 Build a production-style manufacturing analytics assistant that uses a real LangChain multi-agent architecture, a LangGraph workflow, tool-backed agent steps, basic memory, and a deployable FastAPI interface.
 
+The runtime is provider-agnostic at the model layer and can use OpenAI, Anthropic Claude, or Google Gemini through LangChain chat-model integrations.
+
 ## High-Level Design
 
 The system is a sequential multi-agent pipeline:
