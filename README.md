@@ -36,6 +36,8 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
+Then open `http://localhost:8000/` for the web console, or use `http://localhost:8000/docs` for the API docs.
+
 ## Model Providers
 
 Set `LLM_PROVIDER` to one of:
@@ -108,6 +110,20 @@ Response shape:
   "confidence_score": 0.92
 }
 ```
+
+## Web UI
+
+The app now ships with a lightweight browser UI at `/`.
+
+- Upload a production CSV from the browser
+- Inspect dashboard cards and chart-style visual breakdowns
+- Review the generated root-cause analysis and recommended actions
+- Download a PDF report built from the dashboard payload
+
+Additional human-facing endpoints:
+
+- `POST /analyze/dashboard`
+- `POST /reports/pdf`
 
 ## Dev Workflow
 

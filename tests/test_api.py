@@ -79,3 +79,64 @@ def test_analyze_endpoint_returns_strict_shape(
         f"{file_response.status_code} and {json_response.status_code}"
     )
     assert_strict_output_shape(json_response.json())
+
+
+def test_root_serves_web_console(api_app) -> None:
+    client = TestClient(api_app)
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Manufacturing Insight Console" in response.text
+    assert "Run analysis" in response.text
+
+
+def test_dashboard_endpoint_returns_visual_payload(
+    api_app,
+    monkeypatch: pytest.MonkeyPatch,
+    sample_csv_path,
+    strict_mock_output: dict[str, Any],
+) -> None:
+    _patch_workflow_functions(monkeypatch, strict_mock_output)
+    client = TestClient(api_app)
+
+    with sample_csv_path.open("rb") as f:
+        response = client.post(
+            "/analyze/dashboard",
+            files={"file": ("production_sample.csv", f, "text/csv")},
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert "thread_id" in payload
+    assert "analysis_result" in payload
+    assert "plant_snapshot" in payload
+    assert "metric_cards" in payload
+    assert "issue_breakdown" in payload
+    assert "severity_breakdown" in payload
+    assert "machine_breakdown" in payload
+    assert_strict_output_shape(payload["analysis_result"])
+    assert len(payload["metric_cards"]) == 3
+
+
+def test_pdf_report_endpoint_returns_pdf(
+    api_app,
+    monkeypatch: pytest.MonkeyPatch,
+    sample_csv_path,
+    strict_mock_output: dict[str, Any],
+) -> None:
+    _patch_workflow_functions(monkeypatch, strict_mock_output)
+    client = TestClient(api_app)
+
+    with sample_csv_path.open("rb") as f:
+        dashboard_response = client.post(
+            "/analyze/dashboard",
+            files={"file": ("production_sample.csv", f, "text/csv")},
+        )
+
+    assert dashboard_response.status_code == 200
+    pdf_response = client.post("/reports/pdf", json=dashboard_response.json())
+
+    assert pdf_response.status_code == 200
+    assert pdf_response.headers["content-type"].startswith("application/pdf")
+    assert "attachment;" in pdf_response.headers["content-disposition"]
+    assert pdf_response.content.startswith(b"%PDF")
