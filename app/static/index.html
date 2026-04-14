@@ -37,7 +37,9 @@
             <label class="upload-drop" for="csv-file">
               <span class="drop-title">Drop a CSV here or click to browse</span>
               <span class="drop-copy">
-                Required columns: machine_id, temperature, error_rate, downtime_minutes
+                Required columns: machine_id, temperature, error_rate, downtime_minutes.
+                Optional OEE columns: line_id, station_id, shift, planned_production_minutes,
+                good_units, reject_units, ideal_cycle_time_seconds.
               </span>
               <input id="csv-file" name="file" type="file" accept=".csv,text/csv">
             </label>
@@ -74,6 +76,15 @@
           </div>
 
           <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Automotive effectiveness</p>
+                <h3>OEE pulse</h3>
+              </div>
+              <div id="oee-summary" class="oee-summary"></div>
+              <div id="oee-lines" class="oee-line-grid"></div>
+            </section>
+
             <section class="panel">
               <div class="panel-header">
                 <p class="eyebrow">Threshold posture</p>

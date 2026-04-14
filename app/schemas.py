@@ -27,6 +27,13 @@ class ProductionRecord(BaseModel):
     temperature: float = Field(ge=0)
     error_rate: float = Field(ge=0, le=1)
     downtime_minutes: float = Field(ge=0)
+    line_id: str | None = None
+    station_id: str | None = None
+    shift: str | None = None
+    planned_production_minutes: float | None = Field(default=None, gt=0)
+    good_units: int | None = Field(default=None, ge=0)
+    reject_units: int | None = Field(default=None, ge=0)
+    ideal_cycle_time_seconds: float | None = Field(default=None, gt=0)
 
 
 class PlantSnapshot(BaseModel):
@@ -204,6 +211,41 @@ class MachineInsight(BaseModel):
     total_downtime_minutes: float = Field(ge=0)
 
 
+class OeeInsight(BaseModel):
+    """Overall equipment effectiveness metrics for a production scope."""
+
+    availability: float = Field(ge=0, le=1)
+    performance: float = Field(ge=0, le=1)
+    quality: float = Field(ge=0, le=1)
+    oee: float = Field(ge=0, le=1)
+    planned_production_minutes: float = Field(ge=0)
+    operating_minutes: float = Field(ge=0)
+    downtime_minutes: float = Field(ge=0)
+    total_units: int = Field(ge=0)
+    good_units: int = Field(ge=0)
+    reject_units: int = Field(ge=0)
+    status: DashboardStatus
+
+
+class OeeLineInsight(OeeInsight):
+    """Line-level OEE breakdown used by the dashboard and PDF reports."""
+
+    line_id: str = Field(min_length=1)
+    machine_count: int = Field(ge=0)
+
+
+class OeeSummary(BaseModel):
+    """Optional OEE summary when a dataset includes throughput fields."""
+
+    available: bool
+    source_rows: int = Field(ge=0)
+    coverage_rows: int = Field(ge=0)
+    benchmark: float = Field(default=0.85, ge=0, le=1)
+    narrative: str = Field(min_length=1)
+    overall: OeeInsight | None = None
+    line_breakdown: list[OeeLineInsight] = Field(default_factory=list)
+
+
 class AnalysisDashboardResponse(BaseModel):
     """Human-facing analysis payload with chart-ready summaries."""
 
@@ -218,3 +260,4 @@ class AnalysisDashboardResponse(BaseModel):
     issue_breakdown: list[ChartDatum] = Field(default_factory=list)
     severity_breakdown: list[ChartDatum] = Field(default_factory=list)
     machine_breakdown: list[MachineInsight] = Field(default_factory=list)
+    oee_summary: OeeSummary | None = None

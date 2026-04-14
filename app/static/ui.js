@@ -15,6 +15,8 @@ const elements = {
   resultTitle: document.getElementById("result-title"),
   resultSubtitle: document.getElementById("result-subtitle"),
   summaryGrid: document.getElementById("summary-grid"),
+  oeeSummary: document.getElementById("oee-summary"),
+  oeeLines: document.getElementById("oee-lines"),
   metricCards: document.getElementById("metric-cards"),
   issueChart: document.getElementById("issue-chart"),
   severityChart: document.getElementById("severity-chart"),
@@ -50,6 +52,10 @@ function formatChartValue(value) {
   return Number(value).toFixed(0);
 }
 
+function formatPercent(value) {
+  return `${(Number(value) * 100).toFixed(1)}%`;
+}
+
 function titleCase(value) {
   return String(value).replace(/_/g, " ").replace(/\b\w/g, (character) => character.toUpperCase());
 }
@@ -78,6 +84,14 @@ function renderSummary(dashboard) {
     },
   ];
 
+  if (dashboard.oee_summary && dashboard.oee_summary.available && dashboard.oee_summary.overall) {
+    cards.splice(3, 0, {
+      label: "OEE",
+      value: formatPercent(dashboard.oee_summary.overall.oee),
+      caption: "Overall equipment effectiveness",
+    });
+  }
+
   elements.summaryGrid.innerHTML = cards
     .map(
       (card) => `
@@ -85,6 +99,95 @@ function renderSummary(dashboard) {
           <div class="meta-label">${card.label}</div>
           <div class="value">${card.value}</div>
           <p class="drop-copy">${card.caption}</p>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderOee(oeeSummary) {
+  if (!oeeSummary || !oeeSummary.available || !oeeSummary.overall) {
+    elements.oeeSummary.innerHTML =
+      `<p class="drop-copy">${oeeSummary?.narrative || "OEE data is not available for this dataset."}</p>`;
+    elements.oeeLines.innerHTML = "";
+    return;
+  }
+
+  const overall = oeeSummary.overall;
+  const components = [
+    ["Availability", overall.availability],
+    ["Performance", overall.performance],
+    ["Quality", overall.quality],
+  ];
+
+  elements.oeeSummary.innerHTML = `
+    <article class="oee-hero" data-status="${overall.status}">
+      <div class="oee-hero-top">
+        <div>
+          <p class="eyebrow">Overall equipment effectiveness</p>
+          <h4>${formatPercent(overall.oee)}</h4>
+        </div>
+        <span class="status-pill" data-status="${overall.status}">${overall.status}</span>
+      </div>
+      <p class="analysis-copy">${oeeSummary.narrative}</p>
+      <div class="oee-chip-row">
+        <span class="oee-chip">Coverage ${oeeSummary.coverage_rows}/${oeeSummary.source_rows} rows</span>
+        <span class="oee-chip">Benchmark ${formatPercent(oeeSummary.benchmark)}</span>
+        <span class="oee-chip">Downtime ${Number(overall.downtime_minutes).toFixed(0)} min</span>
+        <span class="oee-chip">Good units ${overall.good_units}</span>
+      </div>
+      <div class="chart-stack oee-component-stack">
+        ${components
+          .map(
+            ([label, value]) => `
+              <div class="chart-row">
+                <header>
+                  <strong>${label}</strong>
+                  <span>${formatPercent(value)}</span>
+                </header>
+                <div class="chart-track" aria-hidden="true">
+                  <div class="chart-fill" style="--fill: ${Number(value) * 100}%; --bar-color: var(--steel);"></div>
+                </div>
+              </div>
+            `,
+          )
+          .join("")}
+      </div>
+    </article>
+  `;
+
+  if (!oeeSummary.line_breakdown.length) {
+    elements.oeeLines.innerHTML =
+      '<p class="drop-copy">Add `line_id` values to compare OEE across production lines.</p>';
+    return;
+  }
+
+  elements.oeeLines.innerHTML = oeeSummary.line_breakdown
+    .map(
+      (line) => `
+        <article class="machine-card oee-line-card">
+          <div class="solution-head">
+            <h4>${line.line_id}</h4>
+            <span class="status-pill" data-status="${line.status}">${formatPercent(line.oee)} OEE</span>
+          </div>
+          <dl>
+            <div>
+              <dt>Availability</dt>
+              <dd>${formatPercent(line.availability)}</dd>
+            </div>
+            <div>
+              <dt>Performance</dt>
+              <dd>${formatPercent(line.performance)}</dd>
+            </div>
+            <div>
+              <dt>Quality</dt>
+              <dd>${formatPercent(line.quality)}</dd>
+            </div>
+            <div>
+              <dt>Machines</dt>
+              <dd>${line.machine_count}</dd>
+            </div>
+          </dl>
         </article>
       `,
     )
@@ -249,6 +352,7 @@ function renderDashboard(dashboard, fallbackSourceName) {
   elements.analysisCopy.textContent = dashboard.analysis_result.analysis;
 
   renderSummary(dashboard);
+  renderOee(dashboard.oee_summary);
   renderMetricCards(dashboard.metric_cards);
   renderChart(elements.issueChart, dashboard.issue_breakdown);
   renderChart(elements.severityChart, dashboard.severity_breakdown);

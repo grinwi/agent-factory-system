@@ -49,7 +49,17 @@ def _issue_text(issue: Any) -> str:
 def test_sample_csv_has_expected_columns(sample_csv_path) -> None:
     df = pd.read_csv(sample_csv_path)
     required = {"machine_id", "temperature", "error_rate", "downtime_minutes"}
+    optional_oee = {
+        "line_id",
+        "station_id",
+        "shift",
+        "planned_production_minutes",
+        "good_units",
+        "reject_units",
+        "ideal_cycle_time_seconds",
+    }
     assert required.issubset(df.columns)
+    assert optional_oee.issubset(df.columns)
     assert len(df) >= 20
 
 

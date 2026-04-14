@@ -4,6 +4,8 @@ Production-style LangChain and LangGraph backend that analyzes manufacturing tel
 
 The agent runtime can be configured to use OpenAI, Anthropic Claude, or Google Gemini through environment variables.
 
+The project now also includes an automotive-focused OEE dashboard layer for datasets that include optional throughput columns such as `line_id`, `planned_production_minutes`, `good_units`, `reject_units`, and `ideal_cycle_time_seconds`.
+
 ## Architecture
 
 The system is organized as a real multi-agent pipeline:
@@ -152,6 +154,7 @@ The app now ships with a lightweight browser UI at `/`.
 
 - Upload a production CSV from the browser
 - Inspect dashboard cards and chart-style visual breakdowns
+- Review overall and by-line OEE when the upload includes throughput fields
 - Review the generated root-cause analysis and recommended actions
 - Download a PDF report built from the dashboard payload
 
@@ -169,3 +172,5 @@ docker compose up --build
 ```
 
 More detail is in [`docs/architecture.md`](/Users/adam.grunwald/agent-factory-system/docs/architecture.md).
+
+For planned automotive-specific extensions, see [`docs/automotive-feature-roadmap.md`](/Users/adam.grunwald/agent-factory-system/docs/automotive-feature-roadmap.md).

@@ -7,7 +7,12 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
-from app.schemas import AnalysisDashboardResponse, ChartDatum, MetricInsight
+from app.schemas import (
+    AnalysisDashboardResponse,
+    ChartDatum,
+    MetricInsight,
+    OeeLineInsight,
+)
 
 PAGE_WIDTH = 612
 PAGE_HEIGHT = 792
@@ -70,6 +75,10 @@ def _format_value(value: float) -> str:
     if float(rounded).is_integer():
         return str(int(rounded))
     return f"{rounded:.2f}"
+
+
+def _format_percent(value: float) -> str:
+    return f"{value * 100:.1f}%"
 
 
 @dataclass
@@ -365,6 +374,37 @@ def render_dashboard_pdf(dashboard: AnalysisDashboardResponse) -> bytes:
 
     builder.section_header("Threshold Overview")
     builder.metric_cards(dashboard.metric_cards)
+
+    if dashboard.oee_summary and dashboard.oee_summary.available and dashboard.oee_summary.overall:
+        overall_oee = dashboard.oee_summary.overall
+        builder.section_header("OEE Snapshot")
+        builder.summary_cards(
+            [
+                ("OEE", _format_percent(overall_oee.oee)),
+                ("Availability", _format_percent(overall_oee.availability)),
+                ("Performance", _format_percent(overall_oee.performance)),
+                ("Quality", _format_percent(overall_oee.quality)),
+            ]
+        )
+        builder.wrapped_text(
+            dashboard.oee_summary.narrative,
+            size=11,
+            color="#334155",
+            leading=15,
+        )
+        builder.cursor_y -= 8
+        builder.section_header("Line OEE Ranking")
+        if dashboard.oee_summary.line_breakdown:
+            builder.bullet_list(
+                [_format_oee_line(line) for line in dashboard.oee_summary.line_breakdown]
+            )
+        else:
+            builder.wrapped_text(
+                "No `line_id` values were supplied, so only plant-level OEE is shown.",
+                size=11,
+                color="#334155",
+            )
+
     builder.bar_chart("Issue Mix", dashboard.issue_breakdown)
     builder.bar_chart("Severity Profile", dashboard.severity_breakdown)
 
@@ -435,3 +475,11 @@ def render_dashboard_pdf(dashboard: AnalysisDashboardResponse) -> bytes:
         )
 
     return builder.build()
+
+
+def _format_oee_line(line: OeeLineInsight) -> str:
+    return (
+        f"{line.line_id}: OEE {_format_percent(line.oee)}, availability "
+        f"{_format_percent(line.availability)}, performance {_format_percent(line.performance)}, "
+        f"quality {_format_percent(line.quality)}, {line.machine_count} machines."
+    )
