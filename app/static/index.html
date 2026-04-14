@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manufacturing Insight Console</title>
+    <link rel="stylesheet" href="/static/ui.css">
+    <script src="/static/ui.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Manufacturing analytics console</p>
+          <h1>Upload plant telemetry and inspect the multi-agent diagnosis.</h1>
+          <p class="lead">
+            This browser UI sits on top of the LangGraph workflow. Upload a production CSV,
+            review the issue mix, read the root-cause analysis, and download a report PDF.
+          </p>
+        </div>
+        <div class="hero-note">
+          <p class="note-label">Current memory session</p>
+          <div class="session-row">
+            <input id="thread-id" type="text" readonly>
+            <button id="new-session" class="ghost-button" type="button">New session</button>
+          </div>
+          <p class="note-copy">
+            Reusing the session ID keeps the backend memory thread consistent across repeated
+            analyses.
+          </p>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel upload-panel">
+          <form id="analysis-form" class="upload-form">
+            <label class="upload-drop" for="csv-file">
+              <span class="drop-title">Drop a CSV here or click to browse</span>
+              <span class="drop-copy">
+                Required columns: machine_id, temperature, error_rate, downtime_minutes
+              </span>
+              <input id="csv-file" name="file" type="file" accept=".csv,text/csv">
+            </label>
+            <div class="upload-actions">
+              <div class="file-meta">
+                <span class="meta-label">Selected file</span>
+                <strong id="selected-file">None yet</strong>
+              </div>
+              <div class="button-row">
+                <button id="analyze-button" class="primary-button" type="submit">
+                  Run analysis
+                </button>
+                <button id="download-report" class="secondary-button" type="button" disabled>
+                  Download PDF
+                </button>
+              </div>
+            </div>
+          </form>
+          <p id="status-banner" class="status-banner" data-tone="idle">
+            Waiting for a CSV upload.
+          </p>
+        </section>
+
+        <section id="results" class="results hidden" aria-live="polite">
+          <div class="panel summary-panel">
+            <div class="summary-head">
+              <div>
+                <p class="eyebrow">Latest analysis</p>
+                <h2 id="result-title">Analysis overview</h2>
+              </div>
+              <p id="result-subtitle" class="summary-subtitle"></p>
+            </div>
+            <div id="summary-grid" class="summary-grid"></div>
+          </div>
+
+          <div class="dashboard-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Threshold posture</p>
+                <h3>Metric overview</h3>
+              </div>
+              <div id="metric-cards" class="metric-card-grid"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Visual breakdown</p>
+                <h3>Issue mix by metric</h3>
+              </div>
+              <div id="issue-chart" class="chart-stack"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Visual breakdown</p>
+                <h3>Issue mix by severity</h3>
+              </div>
+              <div id="severity-chart" class="chart-stack"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Machine hotspots</p>
+                <h3>Most affected assets</h3>
+              </div>
+              <div id="machine-breakdown" class="machine-stack"></div>
+            </section>
+          </div>
+
+          <div class="dashboard-grid narrative-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Root-cause narrative</p>
+                <h3>Operational analysis</h3>
+              </div>
+              <p id="analysis-copy" class="analysis-copy"></p>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <p class="eyebrow">Action queue</p>
+                <h3>Recommended next steps</h3>
+              </div>
+              <div id="solutions-list" class="solution-stack"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

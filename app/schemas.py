@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 MetricName = Literal["temperature", "error_rate", "downtime_minutes"]
 SeverityLevel = Literal["low", "medium", "high", "critical"]
 PriorityLevel = Literal["low", "medium", "high", "immediate"]
+DashboardStatus = Literal["stable", "watch", "alert"]
 
 
 class ThresholdConfig(BaseModel):
@@ -169,3 +170,51 @@ class AnalysisResponse(BaseModel):
     analysis: str = Field(min_length=1)
     solutions: list[dict[str, Any]] = Field(default_factory=list)
     confidence_score: float = Field(ge=0, le=1)
+
+
+class ChartDatum(BaseModel):
+    """Generic numeric chart point used by the web dashboard."""
+
+    label: str = Field(min_length=1)
+    value: float = Field(ge=0)
+    color: str | None = Field(default=None, pattern=r"^#[0-9A-Fa-f]{6}$")
+
+
+class MetricInsight(BaseModel):
+    """Threshold-aware summary card for a monitored production metric."""
+
+    metric: MetricName
+    label: str = Field(min_length=1)
+    unit: str = Field(min_length=1)
+    average_value: float = Field(ge=0)
+    max_value: float = Field(ge=0)
+    threshold: float = Field(ge=0)
+    breach_count: int = Field(ge=0)
+    impacted_machine_count: int = Field(ge=0)
+    status: DashboardStatus
+
+
+class MachineInsight(BaseModel):
+    """Machine-level summary used for dashboard hotspot views."""
+
+    machine_id: str = Field(min_length=1)
+    issue_count: int = Field(ge=0)
+    average_temperature: float = Field(ge=0)
+    average_error_rate: float = Field(ge=0, le=1)
+    total_downtime_minutes: float = Field(ge=0)
+
+
+class AnalysisDashboardResponse(BaseModel):
+    """Human-facing analysis payload with chart-ready summaries."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    source_name: str | None = None
+    thread_id: str = Field(min_length=1)
+    analysis_result: AnalysisResponse
+    plant_snapshot: PlantSnapshot
+    thresholds: ThresholdConfig
+    metric_cards: list[MetricInsight] = Field(default_factory=list)
+    issue_breakdown: list[ChartDatum] = Field(default_factory=list)
+    severity_breakdown: list[ChartDatum] = Field(default_factory=list)
+    machine_breakdown: list[MachineInsight] = Field(default_factory=list)

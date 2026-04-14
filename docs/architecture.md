@@ -98,6 +98,22 @@ The API normalizes the input, runs the workflow, and returns the strict JSON con
 }
 ```
 
+## Presentation Layer
+
+The backend now also exposes a lightweight human-facing presentation layer:
+
+- `GET /`
+  Serves a browser UI for manual CSV upload and review.
+- `POST /analyze/dashboard`
+  Reuses the same workflow output and combines it with deterministic plant summaries for
+  chart-ready dashboard data.
+- `POST /reports/pdf`
+  Converts the dashboard payload into a downloadable PDF report without rerunning the LLM
+  pipeline.
+
+This keeps the strict machine-facing API stable while giving operators a production-style
+manual workflow.
+
 ## Testing Strategy
 
 - Data tests verify loading and anomaly detection against the sample CSV.
