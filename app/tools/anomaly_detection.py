@@ -10,7 +10,6 @@ from app.config import get_settings
 from app.schemas import DetectedIssue, SeverityLevel, ThresholdConfig
 from app.tools.data_loader import load_production_data, normalize_dataframe
 
-
 SEVERITY_RANK: dict[SeverityLevel, int] = {
     "critical": 4,
     "high": 3,

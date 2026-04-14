@@ -1,0 +1,6 @@
+interface:
+  display_name: "Architect"
+  short_description: "Designs system structure and technical approach"
+  default_prompt: "Use $architect to define system boundaries, choose patterns, and shape the technical design for a feature or refactor."
+policy:
+  allow_implicit_invocation: false

@@ -14,7 +14,6 @@ from pydantic import BaseModel
 from app.config import Settings
 from app.llm_factory import build_chat_model
 
-
 ResponseT = TypeVar("ResponseT", bound=BaseModel)
 ContextT = TypeVar("ContextT")
 

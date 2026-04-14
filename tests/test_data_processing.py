@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import pandas as pd
-
 from conftest import call_with_supported_kwargs, get_attr_first, import_first
-
 
 DATA_MODULE_CANDIDATES = [
     "tools.data_processing",
@@ -36,7 +34,9 @@ def _normalize_issues(result: Any) -> list[Any]:
         issues = result["issues"]
     else:
         issues = result
-    assert isinstance(issues, list), "Anomaly function must return a list or dict with 'issues' list."
+    assert isinstance(
+        issues, list
+    ), "Anomaly function must return a list or dict with 'issues' list."
     return issues
 
 

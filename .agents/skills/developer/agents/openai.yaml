@@ -1,0 +1,6 @@
+interface:
+  display_name: "Developer"
+  short_description: "Implements features and technical changes"
+  default_prompt: "Use $developer to implement a feature, refactor code, and verify the resulting changes."
+policy:
+  allow_implicit_invocation: false

@@ -8,7 +8,6 @@ from app.config import get_settings
 from app.graph import workflow as workflow_module
 from app.schemas import AnalysisJob, AnalysisResponse, AnalyzeJsonRequest
 
-
 router = APIRouter(tags=["analysis"])
 
 
@@ -23,7 +22,10 @@ async def analyze_production(request: Request) -> AnalysisResponse:
             form = await request.form()
             upload = form.get("file")
             if upload is None or not hasattr(upload, "read"):
-                raise HTTPException(status_code=400, detail="Upload a CSV file in the `file` field.")
+                raise HTTPException(
+                    status_code=400,
+                    detail="Upload a CSV file in the `file` field.",
+                )
 
             raw_bytes = await upload.read()
             if not raw_bytes:

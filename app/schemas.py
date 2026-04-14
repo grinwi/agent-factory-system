@@ -6,7 +6,6 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-
 MetricName = Literal["temperature", "error_rate", "downtime_minutes"]
 SeverityLevel = Literal["low", "medium", "high", "critical"]
 PriorityLevel = Literal["low", "medium", "high", "immediate"]
@@ -119,7 +118,7 @@ class AnalyzeJsonRequest(BaseModel):
     thread_id: str | None = None
 
     @model_validator(mode="after")
-    def validate_source(self) -> "AnalyzeJsonRequest":
+    def validate_source(self) -> AnalyzeJsonRequest:
         if not self.records and not self.data and not self.csv_text:
             raise ValueError("Provide `records`, `data`, or `csv_text`.")
         return self
@@ -139,7 +138,7 @@ class AnalysisJob(BaseModel):
     thresholds: ThresholdConfig = Field(default_factory=ThresholdConfig)
 
     @model_validator(mode="after")
-    def validate_source(self) -> "AnalysisJob":
+    def validate_source(self) -> AnalysisJob:
         if not self.records and not self.csv_text and not self.csv_path:
             raise ValueError("Provide telemetry records, CSV text, or a CSV path.")
         return self
@@ -151,7 +150,7 @@ class AnalysisJob(BaseModel):
         *,
         source_name: str | None = None,
         thresholds: ThresholdConfig | None = None,
-    ) -> "AnalysisJob":
+    ) -> AnalysisJob:
         return cls(
             records=request.resolved_records(),
             csv_text=request.csv_text,

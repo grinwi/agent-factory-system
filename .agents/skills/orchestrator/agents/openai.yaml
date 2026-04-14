@@ -1,0 +1,6 @@
+interface:
+  display_name: "Orchestrator"
+  short_description: "Routes work across the specialist agents"
+  default_prompt: "Use $orchestrator to triage my request, choose the right specialist agents, and drive the work to a clear outcome."
+policy:
+  allow_implicit_invocation: true

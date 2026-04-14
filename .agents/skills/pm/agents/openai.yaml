@@ -1,0 +1,6 @@
+interface:
+  display_name: "PM"
+  short_description: "Scopes features and clarifies delivery"
+  default_prompt: "Use $pm to scope a feature, define acceptance criteria, and identify delivery risks."
+policy:
+  allow_implicit_invocation: false

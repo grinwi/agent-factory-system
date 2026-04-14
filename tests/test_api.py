@@ -4,10 +4,8 @@ from typing import Any
 
 import pandas as pd
 import pytest
-from fastapi.testclient import TestClient
-
 from conftest import assert_strict_output_shape, import_first
-
+from fastapi.testclient import TestClient
 
 API_MODULE_CANDIDATES = [
     "app.main",
@@ -37,7 +35,10 @@ def api_app():
     return module.app
 
 
-def _patch_workflow_functions(monkeypatch: pytest.MonkeyPatch, strict_mock_output: dict[str, Any]) -> None:
+def _patch_workflow_functions(
+    monkeypatch: pytest.MonkeyPatch,
+    strict_mock_output: dict[str, Any],
+) -> None:
     def fake_workflow(*args: Any, **kwargs: Any) -> dict[str, Any]:
         return strict_mock_output
 

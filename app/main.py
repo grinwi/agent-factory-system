@@ -7,7 +7,6 @@ from fastapi import FastAPI
 from app.api.routes import router as analysis_router
 from app.config import get_settings
 
-
 settings = get_settings()
 
 app = FastAPI(

@@ -1,0 +1,6 @@
+interface:
+  display_name: "QA"
+  short_description: "Tests behavior and checks regressions"
+  default_prompt: "Use $qa to validate behavior, write or review tests, and identify regressions."
+policy:
+  allow_implicit_invocation: false

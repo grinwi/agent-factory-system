@@ -1,0 +1,6 @@
+interface:
+  display_name: "Researcher"
+  short_description: "Builds context and investigates unknowns"
+  default_prompt: "Use $researcher to gather technical context, compare options, and summarize decision-ready findings."
+policy:
+  allow_implicit_invocation: false

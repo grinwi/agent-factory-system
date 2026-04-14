@@ -7,7 +7,6 @@ from typing import Any
 
 from app.schemas import DetectedIssue, RootCauseHypothesis, SolutionRecommendation
 
-
 UNSUPPORTED_TERMS = {"pressure", "torque", "voltage", "humidity"}
 
 

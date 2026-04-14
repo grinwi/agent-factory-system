@@ -7,7 +7,6 @@ from typing import Any
 
 from app.schemas import DetectedIssue, PlantSnapshot, SolutionRecommendation
 
-
 SEVERITY_SCORE = {
     "low": 1,
     "medium": 2,
@@ -164,7 +163,9 @@ def build_solution_playbook(issues: list[DetectedIssue]) -> list[dict[str, Any]]
         recommendation = SolutionRecommendation(
             title="Maintain current operating window",
             priority="low",
-            rationale="No anomalies were detected, so the line can continue with routine monitoring.",
+            rationale=(
+                "No anomalies were detected, so the line can continue with routine monitoring."
+            ),
             actions=[
                 "Keep preventive maintenance on schedule.",
                 "Monitor trend changes for the next production batch.",
@@ -191,8 +192,14 @@ def build_solution_playbook(issues: list[DetectedIssue]) -> list[dict[str, Any]]
                     "Overheating raises scrap risk and often accelerates unplanned downtime."
                 ),
                 actions=[
-                    "Inspect coolant flow, fan performance, and ventilation on impacted machines.",
-                    "Reduce operating load until temperatures return below the configured threshold.",
+                    (
+                        "Inspect coolant flow, fan performance, and ventilation on impacted "
+                        "machines."
+                    ),
+                    (
+                        "Reduce operating load until temperatures return below the configured "
+                        "threshold."
+                    ),
                     "Recalibrate temperature sensors after maintenance is completed.",
                 ],
                 expected_impact="Reduces overheating risk and restores process stability.",
@@ -219,7 +226,8 @@ def build_solution_playbook(issues: list[DetectedIssue]) -> list[dict[str, Any]]
                 title="Recover uptime through targeted maintenance",
                 priority=PRIORITY_BY_SCORE[max_score],
                 rationale=(
-                    "Sustained downtime usually means maintenance load or changeover friction is growing."
+                    "Sustained downtime usually means maintenance load or changeover friction "
+                    "is growing."
                 ),
                 actions=[
                     "Inspect the affected assets for recurring stoppage causes.",
@@ -238,4 +246,3 @@ def build_solution_playbook(issues: list[DetectedIssue]) -> list[dict[str, Any]]
         )
     )
     return playbook
-

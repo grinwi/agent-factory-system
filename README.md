@@ -22,6 +22,7 @@ The agents are orchestrated with LangGraph in [`app/graph/workflow.py`](/Users/a
 - [`app/data`](/Users/adam.grunwald/agent-factory-system/app/data)
 - [`app/graph`](/Users/adam.grunwald/agent-factory-system/app/graph)
 - [`app/tools`](/Users/adam.grunwald/agent-factory-system/app/tools)
+- [`.agents`](/Users/adam.grunwald/agent-factory-system/.agents)
 - [`tests`](/Users/adam.grunwald/agent-factory-system/tests)
 - [`data/production_sample.csv`](/Users/adam.grunwald/agent-factory-system/data/production_sample.csv)
 
@@ -63,6 +64,14 @@ export LLM_MODEL=gemini-2.5-flash
 ```
 
 If you omit `LLM_MODEL`, the app falls back to a provider-specific default from `.env.example`.
+
+## Development Agents
+
+Repo-local development agents are configured as skills in [`.agents/skills`](/Users/adam.grunwald/agent-factory-system/.agents/skills). The team roster and default collaboration flow are documented in [`.agents/README.md`](/Users/adam.grunwald/agent-factory-system/.agents/README.md).
+
+Use `$orchestrator` as the default entry point for development work. It routes requests to the specialist roles, including `$architect` for design-heavy changes, instead of treating every role as an always-on independent process.
+
+The current repository setup is orchestrated and human-in-the-loop: `$orchestrator` decides which specialist should contribute next, but the specialist roles are not autonomous background daemons. If you want, this can later be extended into a deeper automation layer that programmatically spawns and coordinates independent workers.
 
 ## API
 

@@ -17,7 +17,6 @@ from app.schemas import (
 )
 from app.tools.recommendation_rules import derive_root_cause_hints, issue_pattern_summary
 
-
 REASONING_PROMPT = """
 You are the Reasoning Agent in a manufacturing analytics pipeline.
 

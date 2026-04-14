@@ -9,7 +9,6 @@ from typing import Literal
 
 from app.schemas import ThresholdConfig
 
-
 LLMProvider = Literal["openai", "anthropic", "gemini"]
 
 
@@ -52,7 +51,9 @@ def normalize_llm_provider(raw_provider: str | None) -> LLMProvider:
     normalized = (raw_provider or "openai").strip().lower()
     if normalized not in PROVIDER_ALIASES:
         supported = ", ".join(sorted(PROVIDER_ALIASES))
-        raise ValueError(f"Unsupported LLM provider '{raw_provider}'. Supported values: {supported}.")
+        raise ValueError(
+            f"Unsupported LLM provider '{raw_provider}'. Supported values: {supported}."
+        )
     return PROVIDER_ALIASES[normalized]
 
 

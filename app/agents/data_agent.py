@@ -14,7 +14,6 @@ from app.schemas import DataAgentResponse, ThresholdConfig
 from app.tools.anomaly_detection import detect_anomaly_models, summarize_issues
 from app.tools.data_loader import build_plant_snapshot, load_production_data
 
-
 DATA_ANALYSIS_PROMPT = """
 You are the Data Analysis Agent for a manufacturing analytics system.
 

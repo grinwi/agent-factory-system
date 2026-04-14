@@ -3,14 +3,12 @@ from __future__ import annotations
 from typing import Any
 
 import pytest
-
 from conftest import (
     assert_strict_output_shape,
     call_with_supported_kwargs,
     get_attr_first,
     import_first,
 )
-
 
 WORKFLOW_MODULE_CANDIDATES = [
     "graph.workflow",
@@ -32,7 +30,12 @@ SOLUTION_NODE_NAMES = ["solution_agent", "run_solutioning", "solution_node"]
 VALIDATION_NODE_NAMES = ["validation_agent", "run_validation", "validation_node"]
 
 
-def _patch_node_if_present(monkeypatch: pytest.MonkeyPatch, module: Any, names: list[str], fn: Any) -> bool:
+def _patch_node_if_present(
+    monkeypatch: pytest.MonkeyPatch,
+    module: Any,
+    names: list[str],
+    fn: Any,
+) -> bool:
     for name in names:
         if hasattr(module, name):
             monkeypatch.setattr(module, name, fn)

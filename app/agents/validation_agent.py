@@ -22,7 +22,6 @@ from app.tools.validation import (
     suggest_confidence_score,
 )
 
-
 VALIDATION_PROMPT = """
 You are the Validation Agent in a manufacturing analytics pipeline.
 

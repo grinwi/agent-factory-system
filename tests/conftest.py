@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import inspect
 import os
+from collections.abc import Iterable
 from importlib import import_module
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 import pytest
-
 
 STRICT_OUTPUT_KEYS = {"issues", "analysis", "solutions", "confidence_score"}
 

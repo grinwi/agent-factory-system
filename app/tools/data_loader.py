@@ -12,7 +12,6 @@ from pydantic import BaseModel
 
 from app.schemas import PlantSnapshot
 
-
 REQUIRED_COLUMNS = (
     "machine_id",
     "temperature",

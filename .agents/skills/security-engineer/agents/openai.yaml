@@ -1,0 +1,6 @@
+interface:
+  display_name: "Security Engineer"
+  short_description: "Reviews security risks and mitigations"
+  default_prompt: "Use $security-engineer to review a feature for security risks, abuse cases, and hardening steps."
+policy:
+  allow_implicit_invocation: false

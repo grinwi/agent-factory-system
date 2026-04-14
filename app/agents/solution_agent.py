@@ -13,7 +13,6 @@ from app.config import Settings
 from app.schemas import DetectedIssue, RootCauseHypothesis, SolutionAgentResponse
 from app.tools.recommendation_rules import build_solution_playbook, prioritization_rules
 
-
 SOLUTION_PROMPT = """
 You are the Solution Agent in a manufacturing analytics workflow.
 
