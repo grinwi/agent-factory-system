@@ -5,11 +5,17 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
+
+from dotenv import load_dotenv
 
 from app.schemas import ThresholdConfig
 
 LLMProvider = Literal["openai", "anthropic", "gemini"]
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(PROJECT_ROOT / ".env")
 
 
 PROVIDER_ALIASES: dict[str, LLMProvider] = {
