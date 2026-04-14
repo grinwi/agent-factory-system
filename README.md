@@ -26,12 +26,45 @@ The agents are orchestrated with LangGraph in [`app/graph/workflow.py`](/Users/a
 - [`tests`](/Users/adam.grunwald/agent-factory-system/tests)
 - [`data/production_sample.csv`](/Users/adam.grunwald/agent-factory-system/data/production_sample.csv)
 
-## Quick Start
+## Easy Local Setup
+
+For less technical testers, the project now includes a guided local setup wizard.
+
+1. Download or clone the repository from GitHub.
+2. Start the wizard:
+
+```bash
+python3 scripts/bootstrap.py
+```
+
+On macOS you can also run [`setup.command`](/Users/adam.grunwald/agent-factory-system/setup.command), and on Windows you can run [`setup.bat`](/Users/adam.grunwald/agent-factory-system/setup.bat).
+
+The wizard will:
+
+- create a local `.venv`
+- install the app dependencies
+- ask which provider you want to use: OpenAI, Claude, or Gemini
+- store your key only in the local `.env`
+- offer to start the web app automatically
+
+The first setup run needs an internet connection so Python can install the required packages.
+
+After setup, launch the app again with:
+
+```bash
+python3 scripts/run_local.py
+```
+
+Or use [`start.command`](/Users/adam.grunwald/agent-factory-system/start.command) on macOS or [`start.bat`](/Users/adam.grunwald/agent-factory-system/start.bat) on Windows.
+
+The local launcher opens `http://127.0.0.1:8000/` in your browser and keeps your API key on your machine.
+
+## Manual Setup
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e ".[dev]"
+pip install .
 cp .env.example .env
 uvicorn app.main:app --reload
 ```
@@ -65,7 +98,9 @@ export GOOGLE_API_KEY=...
 export LLM_MODEL=gemini-2.5-flash
 ```
 
-If you omit `LLM_MODEL`, the app falls back to a provider-specific default from `.env.example`.
+If you omit `LLM_MODEL`, the app falls back to a provider-specific default from [`.env.example`](/Users/adam.grunwald/agent-factory-system/.env.example).
+
+The app automatically loads [`.env`](/Users/adam.grunwald/agent-factory-system/.env) from the project root, so local users do not need to export environment variables manually.
 
 ## Development Agents
 

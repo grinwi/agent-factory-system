@@ -98,6 +98,21 @@ The API normalizes the input, runs the workflow, and returns the strict JSON con
 }
 ```
 
+## Local Bootstrap Layer
+
+For self-hosted BYOK usage, the repository now includes a lightweight local bootstrap layer:
+
+- `scripts/bootstrap.py`
+  Creates `.venv`, installs dependencies, collects the chosen provider and API key, and writes `.env`.
+- `scripts/run_local.py`
+  Validates the local configuration and starts Uvicorn on `127.0.0.1:8000`.
+- `setup.command` / `start.command`
+  Double-click friendly macOS wrappers.
+- `setup.bat` / `start.bat`
+  Windows wrappers for the same flow.
+
+This keeps provider credentials local to each tester's machine while making the local setup path much closer to an installer experience.
+
 ## Presentation Layer
 
 The backend now also exposes a lightweight human-facing presentation layer:
