@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.config import Settings, normalize_llm_provider
+from app.config import Settings, _bool_env, normalize_llm_provider
 from app.llm_factory import build_chat_model
 
 
@@ -20,6 +20,21 @@ from app.llm_factory import build_chat_model
 )
 def test_normalize_llm_provider_aliases(raw_provider: str, expected: str) -> None:
     assert normalize_llm_provider(raw_provider) == expected
+
+
+def test_blank_optional_boolean_env_is_treated_as_unset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("GOOGLE_GENAI_USE_VERTEXAI", "")
+
+    assert _bool_env("GOOGLE_GENAI_USE_VERTEXAI") is None
+
+    settings = Settings(
+        llm_provider="gemini",
+        llm_model="gemini-2.5-flash",
+        google_api_key="google-test-key",
+    )
+    assert settings.google_use_vertexai is None
 
 
 @pytest.mark.parametrize(
