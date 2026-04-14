@@ -129,6 +129,12 @@ The backend now also exposes a lightweight human-facing presentation layer:
 This keeps the strict machine-facing API stable while giving operators a production-style
 manual workflow.
 
+The dashboard layer also now computes optional OEE summaries when uploads include
+throughput fields such as `line_id`, `planned_production_minutes`, `good_units`,
+`reject_units`, and `ideal_cycle_time_seconds`. This makes the UI and PDF output
+useful for automotive-style line effectiveness reviews without changing the strict
+machine-facing `/analyze` contract.
+
 ## Testing Strategy
 
 - Data tests verify loading and anomaly detection against the sample CSV.

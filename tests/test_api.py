@@ -114,8 +114,11 @@ def test_dashboard_endpoint_returns_visual_payload(
     assert "issue_breakdown" in payload
     assert "severity_breakdown" in payload
     assert "machine_breakdown" in payload
+    assert "oee_summary" in payload
     assert_strict_output_shape(payload["analysis_result"])
     assert len(payload["metric_cards"]) == 3
+    assert payload["oee_summary"]["available"] is True
+    assert payload["oee_summary"]["overall"]["oee"] > 0
 
 
 def test_pdf_report_endpoint_returns_pdf(

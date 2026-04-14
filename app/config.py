@@ -35,7 +35,7 @@ def _float_env(name: str, default: float) -> float:
 
 def _bool_env(name: str) -> bool | None:
     value = os.getenv(name)
-    if value is None:
+    if value in {None, ""}:
         return None
     normalized = value.strip().lower()
     if normalized in {"1", "true", "yes", "on"}:

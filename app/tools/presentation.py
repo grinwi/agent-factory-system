@@ -17,6 +17,7 @@ from app.schemas import (
     ThresholdConfig,
 )
 from app.tools.data_loader import build_plant_snapshot, normalize_dataframe
+from app.tools.oee import build_oee_summary
 
 METRIC_ORDER: tuple[MetricName, ...] = (
     "temperature",
@@ -223,4 +224,5 @@ def build_dashboard_response(
         issue_breakdown=build_issue_breakdown(analysis_result),
         severity_breakdown=build_severity_breakdown(analysis_result),
         machine_breakdown=build_machine_breakdown(normalized, analysis_result),
+        oee_summary=build_oee_summary(normalized),
     )

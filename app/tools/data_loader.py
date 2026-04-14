@@ -18,6 +18,21 @@ REQUIRED_COLUMNS = (
     "error_rate",
     "downtime_minutes",
 )
+OPTIONAL_COLUMNS = (
+    "line_id",
+    "station_id",
+    "shift",
+    "planned_production_minutes",
+    "good_units",
+    "reject_units",
+    "ideal_cycle_time_seconds",
+)
+NUMERIC_OPTIONAL_COLUMNS = (
+    "planned_production_minutes",
+    "good_units",
+    "reject_units",
+    "ideal_cycle_time_seconds",
+)
 
 
 class DataFormatError(ValueError):
@@ -43,11 +58,17 @@ def normalize_dataframe(frame: pd.DataFrame) -> pd.DataFrame:
             "Missing required production columns: " + ", ".join(missing_columns)
         )
 
-    normalized = frame.loc[:, REQUIRED_COLUMNS].copy()
+    selected_columns = list(REQUIRED_COLUMNS) + [
+        column for column in OPTIONAL_COLUMNS if column in frame.columns
+    ]
+    normalized = frame.loc[:, selected_columns].copy()
     normalized["machine_id"] = normalized["machine_id"].astype(str)
 
     for column in ("temperature", "error_rate", "downtime_minutes"):
         normalized[column] = pd.to_numeric(normalized[column], errors="raise")
+    for column in NUMERIC_OPTIONAL_COLUMNS:
+        if column in normalized.columns:
+            normalized[column] = pd.to_numeric(normalized[column], errors="raise")
 
     return normalized
 
@@ -95,4 +116,3 @@ def build_plant_snapshot(frame: pd.DataFrame) -> PlantSnapshot:
         max_error_rate=round(float(normalized["error_rate"].max()), 4),
         max_downtime_minutes=round(float(normalized["downtime_minutes"].max()), 2),
     )
-
